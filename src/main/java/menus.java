@@ -1,3 +1,7 @@
+
+import java.util.Scanner;
+
+
 public class menus {
     public static void main(String[] args) {
         menuAdministrador();
@@ -91,6 +95,7 @@ public class menus {
 
     }
     public static void menuTecnico(){
+        Scanner scanner= new Scanner(System.in);
         System.out.println(" ____  _                           _     _       \r\n" + //
                         "| __ )(_) ___ _ ____   _____ _ __ (_) __| | ___  \r\n" + //
                         "|  _ \\| |/ _ \\ '_ \\ \\ / / _ \\ '_ \\| |/ _` |/ _ \\ \r\n" + //
@@ -102,11 +107,29 @@ public class menus {
                         "  |_|\\___|\\___|_| |_|_|\\___\\___/ ");
                         System.out.println(" ");
                         System.out.println("1. Registrar Revisión");
+                        String detallesAvion="";
+                        String fechareparacion="";
+                        String descripcionrevision="";
+                        String empleadorevision="";
+                        while (detallesAvion.isEmpty() || fechareparacion.isEmpty() || descripcionrevision.isEmpty() || empleadorevision.isEmpty())  {
+                            System.out.println("Ingresa los detalles del avióna revisar");
+                        
+                         detallesAvion = scanner.nextLine();
+                         System.out.println("Ingresa porfavor la fecha de la revisión ");
+                         fechareparacion =scanner.nextLine();
+                         System.out.println("Ingresa porfavor detalles de la revisión a relizar");
+                         descripcionrevision=scanner.nextLine();
+                          System.out.println("Ingresa el empleado responsable");
+                         empleadorevision=scanner.nextLine();
+                         if (detallesAvion.isEmpty() || fechareparacion.isEmpty() || descripcionrevision.isEmpty() || empleadorevision.isEmpty()) {
+                            System.out.println("Error Por favor, ingresa todos los datos necesarios.");
+                        }
+                    }
                         System.out.println("2. Consultar Historial de Revisiones");
                         System.out.println("3. Actualizar Revisión");
                         System.out.println("4. Eliminar Revisión");
                         System.out.println("5. Salir");
-
+    scanner.close();
     }
     }
 
