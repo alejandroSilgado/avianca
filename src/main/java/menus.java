@@ -40,12 +40,6 @@ public class menus {
         System.out.println("23. Eliminar Tipo de Documento");
         System.out.println("24. Consultar Tipo de Documento");
         System.out.println("25. Salir");
-
-
-    
-
-
-
     }
     public static void menuAgente(){
         System.out.println(" ____  _                           _     _       \r\n" + //
@@ -85,7 +79,7 @@ public class menus {
                         " \\____|_|_|\\___|_| |_|\\__\\___|   ");
                         System.out.println(" ");
                         System.out.println("1. Buscar Vuelos");
-                        System.out.println("2. Seleccionar Vuelo\"");
+                        System.out.println("2. Seleccionar Vuelo");
                         System.out.println("3. Añadir Pasajeros");
                         System.out.println("4. Seleccionar Asientos");
                         System.out.println("5. Realizar Pago");
