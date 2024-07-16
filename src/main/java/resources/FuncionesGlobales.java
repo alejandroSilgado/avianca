@@ -18,11 +18,12 @@ public class FuncionesGlobales {
             e.printStackTrace();
         }
     }
-        public static void ImprimirTabla(String tabla) {
+    
+    public static void ImprimirTabla(String tabla) {
         String sql = "{CALL ImprimirTabla(?)}";
 
         try (Connection conn = ConexionBD.getConnection();
-                CallableStatement cstmt = conn.prepareCall(sql)) {
+            CallableStatement cstmt = conn.prepareCall(sql)) {
 
             cstmt.setString(1, tabla);
 

@@ -51,4 +51,36 @@ public class dbOutAdministrador {
         }
 
     }
+
+    public static void dbConsultarAvion(String matricula) {
+        
+    }
+
+    public static void dbConsultarTrayecto(String id_trayecto) {
+        
+    }
+
+    public static void dbRegistrarAreopuerto(String nombre, String pais, String ciudad) {
+        
+    }
+
+    public static void dbConsultarAreopuerto(String matricula) {
+        
+    }
+
+    public static void dbActualizarAvion(Integer id_areopuerto) {
+        
+    }
+    public static void dbEliminarAvion(String matricula) {
+        
+    }
+    public static void dbAsignarAvion(Integer) {
+        
+    }
+    public static void dbEliminarAvion(String matricula) {
+        
+    }
+    public static void dbEliminarAvion(String matricula) {
+        
+    }
 }

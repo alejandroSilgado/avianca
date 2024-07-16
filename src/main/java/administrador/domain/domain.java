@@ -69,11 +69,10 @@ public class domain {
     public static void consultarAvion() {
         Scanner scanner = new Scanner(System.in);
 
-        // Imprimir aviones
-        resources.FuncionesGlobales.ImprimirTabla("aviones");
-
         System.out.println("Ingrese la matricula del avion: ");
         String matricula = scanner.nextLine();
+
+
 
     }
 }
