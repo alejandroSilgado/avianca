@@ -1,14 +1,12 @@
 package administrador.application;
 
 import java.util.Scanner;
-
+import administrador.domain.*;
+import resources.FuncionesGlobales;
 public class appAdministrador {
-    public static void main(String[] args) {
-        menuAdministrador();
-    }
     public static void menuAdministrador() {
         Scanner scanner = new Scanner(System.in);
-
+        FuncionesGlobales.limpiarPantalla();
         System.out.println(" ____  _                           _     _                      \r\n" + //
                 "| __ )(_) ___ _ ____   _____ _ __ (_) __| | ___                 \r\n" + //
                 "|  _ \\| |/ _ \\ '_ \\ \\ / / _ \\ '_ \\| |/ _` |/ _ \\                \r\n" + //
@@ -51,19 +49,13 @@ public class appAdministrador {
 
         switch (opcion) {
             case 2:
-                // Registrar Avion
-                System.out.println("Registrar Avion");
-                // Lógica para registrar un avión
+                domain.registrarAvion();             // Lógica para registrar un avión
                 break;
             case 3:
-                // Asignar Tripulación
-                System.out.println("Asignar Tripulación");
-                // Lógica para asignar tripulación
+                domain.asignarTripulacion();
                 break;
             case 4:
-                // Consultar Avión
-                System.out.println("Consultar Avión");
-                // Lógica para consultar un avión
+                domain.consultarAvion();
                 break;
             case 5:
                 // Consultar Trayecto
