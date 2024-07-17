@@ -55,7 +55,13 @@ public class tecnicodomain {
         System.out.println("ingresa porfavor  el identificador de la revision");
         int identificador= scanner.nextInt();
         scanner.nextLine();
+
+        // el sistema valida la existencia de la revision
         
+        System.out.println("El sistema elimino de manera exitosa la revisiòn");
+
+        
+
 
        
     }
