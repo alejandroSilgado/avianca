@@ -70,12 +70,30 @@ public class clientedomain {
 
         cliente.Interface.dbOutCliente.dbanadirPasajeros(nombrepasajero, edadpasajero, tipodeDocumento, numeroDocumento);
 
-        
-  
-
-
-
     }
+    public static void selecciionarAsientos() {
+        Scanner scanner= new Scanner (System.in);
+
+        // El sistema me muestra los asientos disponibles 
+
+        System.out.println("Ingresa el id del asiento");
+        Integer idasiento= scanner.nextInt();
+        scanner.nextLine();
+
+        // el sistema debe permitir guardar los asientos disponibles 
+ 
+    }
+ 
+    public static realizarPago() {
+        Scanner scanner= new Scanner (System.in);
+
+        // Ojo precondición-para poder ejecutarse el sistema debe haber selecionado los asientos 
+
+        System.out.println("Ingresa el metodo de pago");
+        String metododePago=scanner.nextLine();
+        
+    }
+
 
    
 }
