@@ -47,6 +47,14 @@ public class dbOutCliente{
         }
     }
 
+    public static void dbanadirPasajeros() {
+        public static void dbbuscarvuelos(String nombrepasajero,Integer edadpasajero,String tipodeDocumento,Integer numeroDocumento){
+            
+        }
+
+        
+    }
+
 }
 
 

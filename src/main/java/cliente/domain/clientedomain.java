@@ -47,7 +47,35 @@ public class clientedomain {
 
         
     }
+    public static void anadirPasajeros() {
+        Scanner scanner =new Scanner (System.in);
+
+        System.out.println("porfavor ingresa los datos del pasajero");
+        System.out.println("Ingresa el nombre del pasajero");
+        String nombrepasajero= scanner.nextLine();
+
+        System.out.println("Ingresa la edad del pasajero");
+        Integer edadpasajero =scanner.nextInt();
+        scanner.nextLine();
 
     
+        System.out.println("Ingresa el tipo de documento");
+        String tipodeDocumento= scanner.nextLine();
+
+
+        System.out.println("Ingresa el numero del documento");
+        Integer numeroDocumento =scanner.nextInt();
+        scanner.nextLine();
+
+
+        cliente.Interface.dbOutCliente.dbanadirPasajeros(nombrepasajero, edadpasajero, tipodeDocumento, numeroDocumento);
+
+        
+  
+
+
+
+    }
+
    
 }
