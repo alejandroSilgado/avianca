@@ -32,20 +32,20 @@ public class appTecnico {
 
         switch (opcion) {
             case 1:
-                
-                break;
+                tecnico.domain.tecnicodomain.registrarRevision();
+                return;
             case 2:
-                break;
-
+                tecnico.domain.tecnicodomain.historialdeRevisiones();
+                return;
             case 3:
-                break;
-
+                tecnico.domain.tecnicodomain.actualizarRevision();
+                return;
             case 4:
-                break;
-
+                tecnico.domain.tecnicodomain.Eliminarrevision();
+                return;
             case 5:
-                break;
-
+                System.out.println("Saliendo...");
+                return;
             default:
                 break;
         }

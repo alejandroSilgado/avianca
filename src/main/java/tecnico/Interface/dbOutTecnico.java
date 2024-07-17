@@ -17,10 +17,14 @@ public class dbOutTecnico {
             // INSERCION EN LA TABLA DETALLES REVISION 
             pstmtDetalle.setString(1, descripcion);
             pstmtDetalle.setInt(2, id_empleado);
+
+            System.out.println("Revision registrada exitosamente.");
+
         } catch (SQLException e) {
             throw new RuntimeException("Error al guardar la revisión", e);
         }
     }
+
     public static void dbConsultarRevisiones(String matricula) {
         String sql = "SELECT r.fecha_revision, dr.descripcion, e.nombre AS nombre_empleado " +
                      "FROM revisiones r " +
@@ -54,7 +58,56 @@ public class dbOutTecnico {
             System.out.println("Error al consultar el historial de revisiones: " + e.getMessage());
         }
     }
+
+    public static void dbActualizarRevision(Integer id_revision, String nueva_fecha, String nueva_descripcion, Integer nuevo_id_empleado) {
+        String sqlRevision = "UPDATE revisiones SET fecha_revision = ? WHERE id = ?";
+        String sqlDetalle = "UPDATE detalles_revision SET descripcion = ?, id_empleado = ? WHERE id_revision = ?";
+
+        try (Connection conn = ConexionBD.getConnection();
+             PreparedStatement pstmtRevision = conn.prepareStatement(sqlRevision);
+             PreparedStatement pstmtDetalle = conn.prepareStatement(sqlDetalle)) {
+
+            // Actualizar la tabla de revisiones
+            pstmtRevision.setString(1, nueva_fecha);
+            pstmtRevision.setInt(2, id_revision);
+            pstmtRevision.executeUpdate();
+
+            // Actualizar la tabla de detalles de revisión
+            pstmtDetalle.setString(1, nueva_descripcion);
+            pstmtDetalle.setInt(2, nuevo_id_empleado);
+            pstmtDetalle.setInt(3, id_revision);
+            pstmtDetalle.executeUpdate();
+
+            System.out.println("Revisión actualizada exitosamente.");
+
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar la revisión: " + e.getMessage());
+        }
+    }
     
+    public static void dbEliminarRevision(Integer id_revision) {
+        String sqlRevision = "DELETE FROM revisiones WHERE id = ?";
+        String sqlDetalle = "DELETE FROM detalles_revision WHERE id_revision = ?";
+
+        try (Connection conn = ConexionBD.getConnection();
+             PreparedStatement pstmtRevision = conn.prepareStatement(sqlRevision);
+             PreparedStatement pstmtDetalle = conn.prepareStatement(sqlDetalle)) {
+
+            // Eliminar los detalles de revisión primero para mantener la integridad referencial
+            pstmtDetalle.setInt(1, id_revision);
+            pstmtDetalle.executeUpdate();
+
+            // Luego eliminar la revisión
+            pstmtRevision.setInt(1, id_revision);
+            pstmtRevision.executeUpdate();
+
+            System.out.println("Revisión eliminada exitosamente.");
+
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar la revisión: " + e.getMessage());
+        }
+    }
+
 }
 
 

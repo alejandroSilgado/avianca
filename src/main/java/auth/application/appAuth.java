@@ -47,7 +47,7 @@ public class appAuth {
 
         switch (opcion) {
             case 1:
-                menuInicioSesion(); // Lógica para registrar un avión
+                menuInicioSesion(); 
                 break;
             case 2:
                 menuCrearCuenta();
