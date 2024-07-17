@@ -1,5 +1,5 @@
 package agente.Interface;
 
-public class Interface {
+public class dbOutAgente {
 
 }
