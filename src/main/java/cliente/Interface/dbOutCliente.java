@@ -55,6 +55,14 @@ public class dbOutCliente{
         
     }
 
+    public static void dbrealizarPago() {
+        public static void dbbuscarvuelos(String nombrepasajero,Integer edadpasajero,String tipodeDocumento,Integer numeroDocumento){
+            
+        }
+
+        
+    }
+
 }
 
 

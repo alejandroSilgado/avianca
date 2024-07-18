@@ -34,24 +34,31 @@ public class appCliente {
 
         switch (opcion) {
             case 1:
-                
+                cliente.domain.clientedomain.buscarvuelos();
                 break;
             case 2:
+            cliente.domain.clientedomain.seleccionarVuelo();
                 break;
 
             case 3:
+            cliente.domain.clientedomain.anadirPasajeros();
                 break;
 
             case 4:
+            cliente.domain.clientedomain.selecciionarAsientos();
                 break;
 
             case 5:
+            cliente.domain.clientedomain.realizarPago();
                 break;
             case 6:
+            cliente.domain.clientedomain.consultarreserva();
                break;
             case 7:
+            cliente.domain.clientedomain.cancelarreserva();
               break;
             case 8:
+            cliente.domain.clientedomain.modificarReserva();
               break;
             case 9:
               break; 
