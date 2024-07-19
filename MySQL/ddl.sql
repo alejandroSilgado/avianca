@@ -9,6 +9,7 @@ CREATE TABLE clientes (
     edad INT,
     email VARCHAR(50),
     contraseña VARCHAR(20),
+    documento VARCHAR(20),
     id_documento INT,
     FOREIGN KEY (id_documento) REFERENCES tipos_documentos(id)
 );
