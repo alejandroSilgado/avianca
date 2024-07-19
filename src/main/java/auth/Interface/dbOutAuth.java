@@ -58,7 +58,7 @@ public class dbOutAuth {
             pstmt.setString(2, apellido);
             pstmt.setString(3, email);
             pstmt.setString(4, contraseña);
-            pstmt.setInt(5, 4); // Asignar el rol de cliente, asumiendo que es el rol por defecto para nuevos usuarios
+            pstmt.setInt(5, 3); // Asignar el rol de cliente, asumiendo que es el rol por defecto para nuevos usuarios
     
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
