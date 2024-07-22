@@ -97,9 +97,9 @@ INSERT INTO aviones (matricula, capacidad, fecha_fabricacion, id_estado, id_aero
 
 -- Insertar en la tabla conexiones_vuelos
 INSERT INTO conexiones_vuelos (numero_conexion, id_trayecto, id_avion, id_aeropuerto) VALUES
-('CX001', 1, 1, 2),
-('CX002', 2, 2, 3),
-('CX003', 3, 3, 4);
+('CX001', 1, 2, 1),
+('CX002', 2, 3, 2),
+('CX003', 3, 4, 3);
 
 -- Insertar en la tabla reservas_trayectos
 INSERT INTO reservas_trayectos (fecha, id_trayecto) VALUES
