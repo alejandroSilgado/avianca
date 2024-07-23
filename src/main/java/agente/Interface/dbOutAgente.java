@@ -1,32 +1,67 @@
 package agente.Interface;
 
 import java.sql.*;
-import java.util.Scanner;
 
 import resources.ConexionBD;
 
 public class dbOutAgente {
-    public static void dbCrearReserva(Integer clienteId, Integer trayectoId, String fecha, Integer tarifa_precio) {
-        String sqlReserva = "INSERT INTO trayectos (fecha_trayecto, precio_trayecto ) VALUES (?)";
+    // error
+    public static void dbCrearReserva(Integer clienteId, Integer trayectoId, String fecha, Float tarifa_precio) {
+        String sqlReservaTrayecto = "INSERT INTO reservas_trayectos (id_trayecto) VALUES (?)";
         String sqlDetalle = "INSERT INTO detalles_reservas_trayectos (id_reserva_trayecto, id_cliente) VALUES (?, ?)";
-        try {
-            Connection conn = ConexionBD.getConnection();
-            PreparedStatement pstm = conn.prepareStatement(sqlDetalle);
-            PreparedStatement pstms = conn.prepareStatement(sqlReserva);
-
-            pstm.setInt(1, clienteId);
-            pstm.setInt(2, trayectoId);
+        String sqlTrayecto = "INSERT INTO trayectos (fecha_trayecto, precio_trayecto) VALUES (?, ?)";
         
-            pstms.setString(1,fecha);
-            pstms.setInt(2, tarifa_precio);
-
-            System.out.println("Reserva registrada exitosamente.");
-
+        try (Connection conn = ConexionBD.getConnection()) {
+            conn.setAutoCommit(false);
+            
+            try (PreparedStatement pstmTrayecto = conn.prepareStatement(sqlTrayecto, Statement.RETURN_GENERATED_KEYS);
+                 PreparedStatement pstmReservaTrayecto = conn.prepareStatement(sqlReservaTrayecto, Statement.RETURN_GENERATED_KEYS);
+                 PreparedStatement pstmDetalle = conn.prepareStatement(sqlDetalle)) {
+    
+                // Si no se proporciona un trayectoId, creamos uno nuevo
+                if (trayectoId == null) {
+                    pstmTrayecto.setString(1, fecha);
+                    pstmTrayecto.setFloat(2, tarifa_precio);
+                    pstmTrayecto.executeUpdate();
+    
+                    try (ResultSet generatedKeys = pstmTrayecto.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            trayectoId = generatedKeys.getInt(1);
+                        } else {
+                            throw new SQLException("No se pudo obtener el ID del trayecto creado.");
+                        }
+                    }
+                }
+    
+                // Insertar en la tabla reservas_trayectos
+                pstmReservaTrayecto.setInt(1, trayectoId);
+                pstmReservaTrayecto.executeUpdate();
+    
+                int reservaTrayectoId;
+                try (ResultSet generatedKeys = pstmReservaTrayecto.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        reservaTrayectoId = generatedKeys.getInt(1);
+                    } else {
+                        throw new SQLException("No se pudo obtener el ID de la reserva de trayecto creada.");
+                    }
+                }
+    
+                // Insertar en la tabla detalles_reservas_trayectos
+                pstmDetalle.setInt(1, reservaTrayectoId);
+                pstmDetalle.setInt(2, clienteId);
+                pstmDetalle.executeUpdate();
+    
+                conn.commit();
+                System.out.println("Reserva registrada exitosamente.");
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Error al guardar la Reserva", e);
         }
     }
-
+    // Funcional
     public static void dbconsultarCliente(Integer documento) {
         String sql = "SELECT c.nombre, c.edad, c.email, t.nombre AS tipo_documento " +
                      "FROM clientes AS c " +
@@ -60,43 +95,48 @@ public class dbOutAgente {
             System.out.println("Error al listar el cliente: " + e.getMessage());
         }
     }
-     
+    // error
     public static void dbconsultarReserva(Integer documentoCliente) {
-        String sql = "SELECT * FROM reservas_trayectos AS rt "
-            + "JOIN detalles_reservas_trayectos AS drt ON rt.id = drt.id_reserva_trayecto "
-            + "JOIN clientes AS c ON drt.id_cliente = c.id "
-            + "WHERE c.documento = ?";
-
-            try (Connection conn = ConexionBD.getConnection();
-            PreparedStatement pstm = conn.prepareStatement(sql)) {
-       
-           pstm.setInt(1, documentoCliente);
-       
-           try (ResultSet rs = pstm.executeQuery()) {
-               while (rs.next()) {
-                   int idReserva = rs.getInt("id");
-                   Date fechaReserva = rs.getDate("fecha");
-                   float precioTrayecto = rs.getFloat("precio_trayecto");
-                   String nombreCliente = rs.getString("nombre");
-       
-                   System.out.println("________________________________________");
-                   System.out.println("ID Reserva: " + idReserva);
-                   System.out.println("Fecha Reserva: " + fechaReserva);
-                   System.out.println("Precio Trayecto: " + precioTrayecto);
-                   System.out.println("Nombre Cliente: " + nombreCliente);
-                   System.out.println("________________________________________");
-               }
-       
-               if (!rs.isBeforeFirst()) {
-                   System.out.println("No se encontraron reservas para el documento proporcionado.");
-               }
-           }
-       
-       } catch (SQLException e) {
-           System.out.println("Error al consultar reservas: " + e.getMessage());
-       }
-    }
+        String sql = "SELECT rt.id AS id_reserva_trayecto, t.fecha_trayecto, t.precio_trayecto, c.nombre, c.documento " +
+                     "FROM reservas_trayectos AS rt " +
+                     "JOIN trayectos AS t ON rt.id_trayecto = t.id " +
+                     "JOIN detalles_reservas_trayectos AS drt ON rt.id = drt.id_reserva_trayecto " +
+                     "JOIN clientes AS c ON drt.id_cliente = c.id " +
+                     "WHERE c.documento = ?";
     
+        try (Connection conn = ConexionBD.getConnection();
+             PreparedStatement pstm = conn.prepareStatement(sql)) {
+    
+            pstm.setInt(1, documentoCliente);
+    
+            try (ResultSet rs = pstm.executeQuery()) {
+                if (!rs.isBeforeFirst()) {
+                    System.out.println("No se encontraron reservas para el documento proporcionado.");
+                    return;
+                }
+    
+                while (rs.next()) {
+                    int idReservaTrayecto = rs.getInt("id_reserva_trayecto");
+                    Date fechaTrayecto = rs.getDate("fecha_trayecto");
+                    float precioTrayecto = rs.getFloat("precio_trayecto");
+                    String nombreCliente = rs.getString("nombre");
+                    int documentoClienteResultado = rs.getInt("documento");
+    
+                    System.out.println("________________________________________");
+                    System.out.println("ID Reserva Trayecto: " + idReservaTrayecto);
+                    System.out.println("Fecha Trayecto: " + fechaTrayecto);
+                    System.out.println("Precio Trayecto: " + precioTrayecto);
+                    System.out.println("Nombre Cliente: " + nombreCliente);
+                    System.out.println("Documento Cliente: " + documentoClienteResultado);
+                    System.out.println("________________________________________");
+                }
+            }
+    
+        } catch (SQLException e) {
+            System.out.println("Error al consultar reservas: " + e.getMessage());
+        }
+    }
+    // error
     public static boolean verificarCliente(String idcliente) {
         String sql = "SELECT COUNT(*) FROM clientes WHERE id = ?";
         try (Connection conn = ConexionBD.getConnection();
@@ -113,9 +153,9 @@ public class dbOutAgente {
         }
         return false;
     }
-    
-    public static void dbregistrarCliente(String nombre, Integer edad, String email, String contraseña, Integer tipo_documento, String numeroDocumento) {
-        String sql = "INSERT INTO clientes (nombre, edad, email, contraseña, tipo_documento, numero_documento) VALUES (?, ?, ?, ?, ?, ?)";
+    // error
+    public static void dbregistrarCliente(String nombre, Integer edad, String email, String contraseña, Integer id_documento, String documento) {
+        String sql = "INSERT INTO clientes (nombre, edad, email, contraseña, id_documento, documento) VALUES (?, ?, ?, ?, ?, ?)";
     
         try (Connection conn = ConexionBD.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -124,8 +164,8 @@ public class dbOutAgente {
             pstmt.setInt(2, edad);
             pstmt.setString(3, email);
             pstmt.setString(4, contraseña);
-            pstmt.setInt(5, tipo_documento);
-            pstmt.setString(6, numeroDocumento);
+            pstmt.setInt(5, id_documento);
+            pstmt.setString(6, documento);
     
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
@@ -137,34 +177,16 @@ public class dbOutAgente {
             System.out.println("Error al registrar el cliente: " + e.getMessage());
         }
     }
-    
+    // error
     public static void dbActualizarCliente(String idcliente, String nombre, Integer edad, String email, String contraseña, Integer tipo_documento, String numeroDocumento) {
         StringBuilder queryBuilder = new StringBuilder("UPDATE clientes SET ");
-        boolean first = true;
-    
-        if (nombre != null && !nombre.isEmpty()) {
-            queryBuilder.append("nombre = ?, ");
-            first = false;
-        }
-        if (edad != null) {
-            queryBuilder.append(first ? "" : "edad = ?, ");
-            first = false;
-        }
-        if (email != null && !email.isEmpty()) {
-            queryBuilder.append(first ? "" : "email = ?, ");
-            first = false;
-        }
-        if (contraseña != null && !contraseña.isEmpty()) {
-            queryBuilder.append(first ? "" : "contraseña = ?, ");
-            first = false;
-        }
-        if (tipo_documento != null) {
-            queryBuilder.append(first ? "" : "id_documento = ?, ");
-            first = false;
-        }
-        if (numeroDocumento != null && !numeroDocumento.isEmpty()) {
-            queryBuilder.append(first ? "" : "documento = ?, ");
-        }
+        
+        if (nombre != null && !nombre.isEmpty()) queryBuilder.append("nombre = ?, ");
+        if (edad != null) queryBuilder.append("edad = ?, ");
+        if (email != null && !email.isEmpty()) queryBuilder.append("email = ?, ");
+        if (contraseña != null && !contraseña.isEmpty()) queryBuilder.append("contraseña = ?, ");
+        if (tipo_documento != null) queryBuilder.append("id_documento = ?, ");
+        if (numeroDocumento != null && !numeroDocumento.isEmpty()) queryBuilder.append("documento = ?, ");
     
         int lastCommaIndex = queryBuilder.lastIndexOf(", ");
         if (lastCommaIndex != -1) {
@@ -172,30 +194,18 @@ public class dbOutAgente {
         }
     
         queryBuilder.append(" WHERE id = ?");
-    
+        
         try (Connection conn = ConexionBD.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(queryBuilder.toString())) {
     
             int paramIndex = 1;
-    
-            if (nombre != null && !nombre.isEmpty()) {
-                pstmt.setString(paramIndex++, nombre);
-            }
-            if (edad != null) {
-                pstmt.setInt(paramIndex++, edad);
-            }
-            if (email != null && !email.isEmpty()) {
-                pstmt.setString(paramIndex++, email);
-            }
-            if (contraseña != null && !contraseña.isEmpty()) {
-                pstmt.setString(paramIndex++, contraseña);
-            }
-            if (tipo_documento != null) {
-                pstmt.setInt(paramIndex++, tipo_documento);
-            }
-            if (numeroDocumento != null && !numeroDocumento.isEmpty()) {
-                pstmt.setString(paramIndex++, numeroDocumento);
-            }
+            
+            if (nombre != null && !nombre.isEmpty()) pstmt.setString(paramIndex++, nombre);
+            if (edad != null) pstmt.setInt(paramIndex++, edad);
+            if (email != null && !email.isEmpty()) pstmt.setString(paramIndex++, email);
+            if (contraseña != null && !contraseña.isEmpty()) pstmt.setString(paramIndex++, contraseña);
+            if (tipo_documento != null) pstmt.setInt(paramIndex++, tipo_documento);
+            if (numeroDocumento != null && !numeroDocumento.isEmpty()) pstmt.setString(paramIndex++, numeroDocumento);
     
             pstmt.setInt(paramIndex, Integer.parseInt(idcliente));
     
@@ -211,7 +221,7 @@ public class dbOutAgente {
     }
     
     public static void dbeliminarReserva(Integer id_reserva) {
-        String sql = "DELETE FROM reservas WHERE id_reserva = ?";
+        String sql = "DELETE FROM detalles_reservas_trayectos WHERE id = ?";
 
         try (Connection conn = ConexionBD.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -307,14 +317,104 @@ public class dbOutAgente {
             System.out.println("Error al consultar la asignación de tripulación: " + e.getMessage());
         }
     }
-    public static void dbconsultarEscalasTrayecto() {
-        
+   
+    public static void dbconsultarEscalasTrayecto(Integer idTrayecto) {
+        String sql = "SELECT c.numero_conexion, a.nombre AS nombre_aeropuerto, ci.nombre AS nombre_ciudad, p.nombre AS nombre_pais "
+        + "FROM conexiones_vuelos c "
+        + "JOIN aeropuertos a ON c.id_aeropuerto = a.id "
+        + "JOIN ciudades ci ON a.id_ciudad = ci.id "
+        + "JOIN paises p ON ci.id_pais = p.id "
+        + "WHERE c.id_trayecto = ?";
+
+    try (Connection conn = ConexionBD.getConnection();
+    PreparedStatement pstm = conn.prepareStatement(sql)) {
+    
+    pstm.setInt(1, idTrayecto);
+    
+    try (ResultSet rs = pstm.executeQuery()) {
+        System.out.println("Escalas para el trayecto " + idTrayecto + ":");
+            while (rs.next()) {
+            String numeroConexion = rs.getString("numero_conexion");
+            String nombreAeropuerto = rs.getString("nombre_aeropuerto");
+            String nombreCiudad = rs.getString("nombre_ciudad");
+            String nombrePais = rs.getString("nombre_pais");
+
+            System.out.println("________________________________________");
+            System.out.println("Número de Conexión: " + numeroConexion);
+            System.out.println("Aeropuerto: " + nombreAeropuerto);
+            System.out.println("Ciudad: " + nombreCiudad);
+            System.out.println("País: " + nombrePais);
+            System.out.println("________________________________________");
+        }
     }
-    public static void dbconsultarTarifaVuelo() {
-        
+        } catch (SQLException e) {
+        System.out.println("Error al consultar las escalas del trayecto: " + e.getMessage());
+        }
     }
-    public static void dbconsultarDocumento() {
+    
+     public static void dbconsultarTarifaVuelo(Integer idTarifa) {
+    String sql = "SELECT t.fecha_trayecto, t.precio_trayecto, tv.descripcion, tv.valor, cv.numero_conexion "
+               + "FROM tarifas_vuelos tv "
+               + "JOIN detalles_reservas_trayectos drt ON tv.id = drt.id_tarifa "
+               + "JOIN reservas_trayectos rt ON drt.id_reserva_trayecto = rt.id "
+               + "JOIN trayectos t ON rt.id_trayecto = t.id "
+               + "JOIN conexiones_vuelos cv ON t.id = cv.id_trayecto "
+               + "WHERE tv.id = ?";
+    
+    try (Connection conn = ConexionBD.getConnection();
+         PreparedStatement pstm = conn.prepareStatement(sql)) {
         
+        pstm.setInt(1, idTarifa);
+        
+        try (ResultSet rs = pstm.executeQuery()) {
+            System.out.println("Tarifas para la tarifa con ID " + idTarifa + ":");
+            while (rs.next()) {
+                Date fechaTrayecto = rs.getDate("fecha_trayecto");
+                float precioTrayecto = rs.getFloat("precio_trayecto");
+                String descripcionTarifa = rs.getString("descripcion");
+                float valorTarifa = rs.getFloat("valor");
+                String numeroConexion = rs.getString("numero_conexion");
+                
+                System.out.println("________________________________________");
+                System.out.println("Fecha del Trayecto: " + fechaTrayecto);
+                System.out.println("Precio del Trayecto: " + precioTrayecto);
+                System.out.println("Descripción de la Tarifa: " + descripcionTarifa);
+                System.out.println("Valor de la Tarifa: " + valorTarifa);
+                System.out.println("Número de Conexión: " + numeroConexion);
+                System.out.println("________________________________________");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al consultar la tarifa del vuelo: " + e.getMessage());
     }
 }
 
+    public static void dbconsultarDocumento(Integer idTipoDocumento) {
+        String sql = "SELECT nombre, descripcion "
+                   + "FROM tipos_documentos "
+                   + "WHERE id = ?";
+
+        try (Connection conn = ConexionBD.getConnection();
+             PreparedStatement pstm = conn.prepareStatement(sql)) {
+             
+            pstm.setInt(1, idTipoDocumento);
+            
+            try (ResultSet rs = pstm.executeQuery()) {
+                if (rs.next()) {
+                    String nombre = rs.getString("nombre");
+                    String descripcion = rs.getString("descripcion");
+
+                    System.out.println("________________________________________");
+                    System.out.println("Nombre del Tipo de Documento: " + nombre);
+                    System.out.println("Descripción: " + descripcion);
+                    System.out.println("________________________________________");
+                    return;
+                } else {
+                    System.out.println("No se encontró información para el tipo de documento con ID: " + idTipoDocumento);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar el tipo de documento: " + e.getMessage());
+        }
+    }
+}

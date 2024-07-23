@@ -1,8 +1,8 @@
 -- Insertar en la tabla tipos_documentos
-INSERT INTO tipos_documentos (nombre) VALUES
-('Pasaporte'),
-('Cédula'),
-('Licencia de Conducir');
+INSERT INTO tipos_documentos (nombre, descripcion) VALUES
+('Pasaporte','Documento de viaje internacional'),
+('Cédula', 'Documento de identidad nacional'),
+('Licencia de Conducir','Permiso para conducir vehículos');
 
 -- Insertar en la tabla roles_tripulacion
 INSERT INTO roles_tripulacion (nombre) VALUES

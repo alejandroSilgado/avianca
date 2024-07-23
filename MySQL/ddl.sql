@@ -1,6 +1,7 @@
 CREATE TABLE tipos_documentos (
     id INT PRIMARY KEY IDENTITY(1,1),
-    nombre VARCHAR(40)
+    nombre VARCHAR(40),
+    descripcion VARCHAR(255)
 );
 
 CREATE TABLE clientes (
