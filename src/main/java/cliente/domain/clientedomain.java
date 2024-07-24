@@ -4,14 +4,11 @@ package cliente.domain;
 import java.util.Scanner;
 
 public class clientedomain {
-    public static void main(String[] args) {
-        consultarreserva();
-    }
 
     public static void buscarvuelos() {
         Scanner scanner = new Scanner(System.in);
 
-        resources.FuncionesGlobales.ImprimirTabla("aviones");
+        resources.FuncionesGlobales.ImprimirTabla("ciudades");
 
         System.out.println("Ingrese la ciudad de origen: ");
         String ciudadorigen = scanner.nextLine();
@@ -33,8 +30,7 @@ public class clientedomain {
         Scanner scanner = new Scanner(System.in);
 
         resources.FuncionesGlobales.ImprimirTabla("conexiones_vuelos");
-        // el sistema le permite al usuario seleccionar de una lista de vuelos
-        // pŕeviamente buscada
+
         System.out.println("Ingresa el id del vuelo que quieres seleccionar: ");
         Integer vueloconsultado = scanner.nextInt();
         scanner.nextLine();
@@ -156,11 +152,20 @@ public class clientedomain {
         Scanner scanner = new Scanner(System.in);
         resources.FuncionesGlobales.ImprimirTabla("detalles_reservas_trayectos");
 
-        System.out.println("Ingresa el identificador de la reserva");
-        String identificador = scanner.nextLine();
+        System.out.println("Ingresa el identificador de la reserva:");
+        Integer identificador = scanner.nextInt();
+        scanner.nextLine();
 
-        System.out.println("Porfavor confirma si quieres cancelar esta reserva ");
-        String identificadorconfirma = scanner.nextLine();
+        System.out.println("Por favor confirma si quieres cancelar esta reserva (sí/no):");
+        String confirmacion = scanner.nextLine().trim().toLowerCase();
+
+        if (!confirmacion.equals("sí") && !confirmacion.equals("si")) {
+            System.out.println("Reserva no cancelada.");
+            return;
+        }
+
+        cliente.Interface.dbOutCliente.dbcencelasReserva(identificador);
+
 
 
     }
@@ -169,20 +174,25 @@ public class clientedomain {
         Scanner scanner = new Scanner(System.in);
         resources.FuncionesGlobales.ImprimirTabla("detalles_reservas_trayectos");
 
-        System.out.println("Ingresa el identificador de la reserva");
+        System.out.println("Ingresa el identificador de la reserva:");
         String identificador = scanner.nextLine();
 
-        // el sistema debe mostrar los detalles de la reserva
+        System.out.println("Ingresa la nueva fecha de la reserva (en formato YYYY-MM-DD):");
+        String nuevaFecha = scanner.nextLine();
 
-        System.out.println("Ingresa la nueva fecha de la reserva");
-        String fecha = scanner.nextLine();
+        System.out.println("Ingresa el nuevo precio de la reserva:");
+        Float nuevoPrecio = scanner.nextFloat();
+        scanner.nextLine(); // Limpiar el buffer
 
-        System.out.println("Ingresa los pasajeros ");
-        String pasajeros = scanner.nextLine();
+        System.out.println("Ingresa el nuevo identificador del trayecto (dejar en blanco para crear uno nuevo):");
+        String trayectoIdStr = scanner.nextLine();
+        Integer trayectoId = null;
+        if (!trayectoIdStr.trim().isEmpty()) {
+            trayectoId = Integer.parseInt(trayectoIdStr);
+        }
 
-        System.out.println("Ingresa los asientos");
-        String asientos = scanner.nextLine();
-
+        cliente.Interface.dbOutCliente.dbModificarReserva(identificador, trayectoId, nuevaFecha, nuevoPrecio);
     }
-
 }
+
+

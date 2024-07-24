@@ -1,8 +1,8 @@
 package cliente.Interface;
 
 import java.sql.*;
-import resources.ConexionBD;
 
+import resources.ConexionBD;
 
 public class dbOutCliente{
     public static void dbbuscarvuelos(String ciudadorigen, String ciudaddestino, String fechasalida, String fecharegreso) {
@@ -220,8 +220,76 @@ public class dbOutCliente{
             System.out.println("Error al consultar la reserva.");
         }
     }
-    
-}
+
+    public static void dbcencelasReserva(Integer identificador) {
+        String query = "DELETE FROM detalles_reservas_trayectos WHERE id = ?";
+
+        try (Connection conn = ConexionBD.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, identificador);
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Reserva con ID " + identificador + " cancelada exitosamente.");
+            } else {
+                System.out.println("No se encontró una reserva con el ID proporcionado.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al cancelar la reserva.");
+        }
+    }
+
+    public static void dbModificarReserva (String reservaId, Integer trayectoId, String nuevaFecha, Float nuevoPrecio) {
+        String sqlUpdateTrayecto = "UPDATE trayectos SET fecha_trayecto = ?, precio_trayecto = ? WHERE id = ?";
+        String sqlInsertTrayecto = "INSERT INTO trayectos (fecha_trayecto, precio_trayecto) VALUES (?, ?)";
+        String sqlUpdateReserva = "UPDATE reservas_trayectos SET id_trayecto = ? WHERE id = ?";
+        
+        try (Connection conn = ConexionBD.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement pstmUpdateTrayecto = conn.prepareStatement(sqlUpdateTrayecto);
+                 PreparedStatement pstmInsertTrayecto = conn.prepareStatement(sqlInsertTrayecto, Statement.RETURN_GENERATED_KEYS);
+                 PreparedStatement pstmUpdateReserva = conn.prepareStatement(sqlUpdateReserva)) {
+
+                if (trayectoId != null) {
+                    // Actualizar el trayecto existente
+                    pstmUpdateTrayecto.setString(1, nuevaFecha);
+                    pstmUpdateTrayecto.setFloat(2, nuevoPrecio);
+                    pstmUpdateTrayecto.setInt(3, trayectoId);
+                    pstmUpdateTrayecto.executeUpdate();
+                } else {
+                    // Crear un nuevo trayecto
+                    pstmInsertTrayecto.setString(1, nuevaFecha);
+                    pstmInsertTrayecto.setFloat(2, nuevoPrecio);
+                    pstmInsertTrayecto.executeUpdate();
+
+                    try (ResultSet generatedKeys = pstmInsertTrayecto.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            trayectoId = generatedKeys.getInt(1);
+                        } else {
+                            throw new SQLException("No se pudo obtener el ID del trayecto creado.");
+                        }
+                    }
+                }
+
+                // Actualizar la reserva con el nuevo trayecto
+                pstmUpdateReserva.setInt(1, trayectoId);
+                pstmUpdateReserva.setInt(2, Integer.parseInt(reservaId));
+                pstmUpdateReserva.executeUpdate();
+
+                conn.commit();
+                System.out.println("Reserva con ID " + reservaId + " modificada exitosamente.");
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al modificar la Reserva", e);
+        }
+    }
+    }
     
 
 

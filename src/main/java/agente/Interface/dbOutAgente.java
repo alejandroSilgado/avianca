@@ -417,4 +417,6 @@ public class dbOutAgente {
             System.out.println("Error al consultar el tipo de documento: " + e.getMessage());
         }
     }
+
+
 }

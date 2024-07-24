@@ -74,13 +74,8 @@ public class dbOutAdministrador {
     public static void dbEliminarAvion(String matricula) {
         
     }
-    public static void dbAsignarAvion(Integer) {
+    public static void dbAsignarAvion(Integer avion) {
         
     }
-    public static void dbEliminarAvion(String matricula) {
-        
-    }
-    public static void dbEliminarAvion(String matricula) {
-        
-    }
+
 }
