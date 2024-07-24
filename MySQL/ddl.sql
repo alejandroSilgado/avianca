@@ -176,3 +176,9 @@ CREATE TABLE usuarios (
     id_rol INT,
     FOREIGN KEY (id_rol) REFERENCES roles_tripulacion(id)
 );
+CREATE TABLE seleccion_asientos (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    asiento VARCHAR(5),
+    id_cliente INT,
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id)
+);
