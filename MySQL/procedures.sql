@@ -1,27 +1,33 @@
-CREATE PROCEDURE ImprimirTabla
-    @nombreTabla NVARCHAR(128)
-AS
+DELIMITER //
+
+CREATE PROCEDURE ImprimirTabla(IN nombreTabla VARCHAR(128))
 BEGIN
-    SET NOCOUNT ON;
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE columna VARCHAR(128);
+    DECLARE columnas TEXT DEFAULT '';
+    DECLARE cur CURSOR FOR 
+        SELECT COLUMN_NAME 
+        FROM INFORMATION_SCHEMA.COLUMNS 
+        WHERE TABLE_NAME = nombreTabla 
+        ORDER BY ORDINAL_POSITION;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-    DECLARE @sql NVARCHAR(MAX);
-    DECLARE @columnas NVARCHAR(MAX) = '';
+    OPEN cur;
 
-    -- Obtener las columnas de la tabla
-    SELECT @columnas = @columnas + QUOTENAME(COLUMN_NAME) + ',' 
-    FROM INFORMATION_SCHEMA.COLUMNS 
-    WHERE TABLE_NAME = @nombreTabla 
-    ORDER BY ORDINAL_POSITION;
+    read_loop: LOOP
+        FETCH cur INTO columna;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        SET columnas = CONCAT(columnas, IF(columnas = '', '', ','), '`', columna, '`');
+    END LOOP;
 
-    -- Quitar la última coma
-    SET @columnas = LEFT(@columnas, LEN(@columnas) - 1);
+    CLOSE cur;
 
-    -- Construir la consulta dinámica
-    SET @sql = N'SELECT ' + @columnas + ' FROM ' + QUOTENAME(@nombreTabla);
+    SET @sql = CONCAT('SELECT ', columnas, ' FROM `', nombreTabla, '`');
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END //
 
-    -- Ejecutar la consulta
-    EXEC sp_executesql @sql;
-END
-
--- Llamar al procedimiento almacenado para imprimir la tabla 'dbo.Clientes'
-EXEC ImprimirTabla 'dbo.Clientes'
+DELIMITER ;

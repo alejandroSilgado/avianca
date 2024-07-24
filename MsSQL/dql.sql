@@ -12,10 +12,14 @@ INSERT INTO roles_tripulacion (nombre) VALUES
 ('Técnico');
 
 -- Insertar en la tabla clientes
-INSERT INTO clientes (nombre, edad, email, contraseña, documento, id_documento) VALUES
-('Juan Pérez', 30, 'juan.perez@email.com', 'mipassword123', '123456789', 1),
-('María Gómez', 25, 'maria.gomez@email.com', 'micontraseña123', '987654321', 2),
-('Pedro López', 40, 'pedro.lopez@email.com', 'mipass2024', '000000000', 3);
+INSERT INTO clientes (nombre, edad, email, contraseña, documento, id_documento)
+VALUES ('Juan Pérez', 30, 'juan.perez@email.com', 'mipassword123', '123456789', 1);
+
+INSERT INTO clientes (nombre, edad, email, contraseña, documento, id_documento)
+VALUES ('María Gómez', 25, 'maria.gomez@email.com', 'micontraseña123', '987654321', 2);
+
+INSERT INTO clientes (nombre, edad, email, contraseña, documento, id_documento)
+VALUES ('Pedro López', 40, 'pedro.lopez@email.com', 'mipass2024', '000000000', 3);
 
 -- Insertar en la tabla tarifas_vuelos
 INSERT INTO tarifas_vuelos (descripcion, detalles, valor) VALUES

@@ -1,11 +1,11 @@
 CREATE TABLE tipos_documentos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(40),
     descripcion VARCHAR(255)
 );
 
 CREATE TABLE clientes (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(30),
     edad INT,
     email VARCHAR(50),
@@ -16,27 +16,27 @@ CREATE TABLE clientes (
 );
 
 CREATE TABLE tarifas_vuelos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     descripcion VARCHAR(20),
     detalles TEXT,
     valor FLOAT
 );
 
 CREATE TABLE trayectos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     fecha_trayecto DATE,
     precio_trayecto FLOAT
 );
 
 CREATE TABLE reservas_trayectos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     fecha DATE,
     id_trayecto INT,
     FOREIGN KEY (id_trayecto) REFERENCES trayectos(id)
 );
 
 CREATE TABLE detalles_reservas_trayectos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     id_reserva_trayecto INT,
     id_cliente INT,
     id_tarifa INT,
@@ -46,36 +46,36 @@ CREATE TABLE detalles_reservas_trayectos (
 );
 
 CREATE TABLE paises (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(50)
 );
 
 CREATE TABLE ciudades (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(50),
     id_pais INT,
     FOREIGN KEY (id_pais) REFERENCES paises(id)
 );
 
 CREATE TABLE aeropuertos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(50),
     id_ciudad INT,
     FOREIGN KEY (id_ciudad) REFERENCES ciudades(id)
 );
 
 CREATE TABLE aerolineas (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(30)
 );
 
 CREATE TABLE roles_tripulacion (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(10)
 );
 
 CREATE TABLE empleados (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(30),
     email VARCHAR(50),
     contraseña VARCHAR(20),
@@ -89,31 +89,31 @@ CREATE TABLE empleados (
 );
 
 CREATE TABLE puertas (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     numero_puerta VARCHAR(10),
     id_aeropuerto INT,
     FOREIGN KEY (id_aeropuerto) REFERENCES aeropuertos(id)
 );
 
 CREATE TABLE estados (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(30)
 );
 
 CREATE TABLE fabricantes (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(40)
 );
 
 CREATE TABLE modelos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(30),
     id_fabricante INT,
     FOREIGN KEY (id_fabricante) REFERENCES fabricantes(id)
 );
 
 CREATE TABLE aviones (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     matricula VARCHAR(30),
     capacidad INT,
     fecha_fabricacion DATE,
@@ -126,7 +126,7 @@ CREATE TABLE aviones (
 );
 
 CREATE TABLE conexiones_vuelos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     numero_conexion VARCHAR(20),
     id_trayecto INT,
     id_avion INT,
@@ -137,14 +137,14 @@ CREATE TABLE conexiones_vuelos (
 );
 
 CREATE TABLE detalles_revision (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     descripcion TEXT,
     id_empleado INT,
     FOREIGN KEY (id_empleado) REFERENCES empleados(id)
 );
 
 CREATE TABLE revisiones (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     fecha_revision DATE,
     id_avion INT,
     FOREIGN KEY (id_avion) REFERENCES aviones(id)
@@ -158,6 +158,7 @@ CREATE TABLE revision_empleados (
     FOREIGN KEY (id_revision) REFERENCES revisiones(id)
 );
 
+
 CREATE TABLE tripulaciones (
     id_empleado INT,
     id_trayectos INT,
@@ -167,7 +168,7 @@ CREATE TABLE tripulaciones (
 );
 
 CREATE TABLE usuarios (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(40),
     apellido VARCHAR(40),
     email VARCHAR(30),
@@ -175,16 +176,14 @@ CREATE TABLE usuarios (
     id_rol INT,
     FOREIGN KEY (id_rol) REFERENCES roles_tripulacion(id)
 );
-
 CREATE TABLE seleccion_asientos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     asiento VARCHAR(5),
     id_cliente INT,
     FOREIGN KEY (id_cliente) REFERENCES clientes(id)
 );
-
 CREATE TABLE escalas (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY IDENTITY(1,1),
     id_trayecto INT,
     id_aeropuerto INT,
     fecha DATE,

@@ -352,5 +352,5 @@ public class domain {
         
         administrador.Interface.dbOutAdministrador.dbConsultarTipoDocumento(idTipoDocumento);
     }
-    
+
 }
