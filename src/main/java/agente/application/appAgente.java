@@ -71,7 +71,8 @@ public class appAgente {
                 agente.domain.agenteDomain.consultarDocumento();
                 return;
             case 12:
-                System.out.println("Saliendo...");
+                System.out.println("Volviendo al menu principal...");
+                auth.application.appAuth.menuPrincipal();
                 return;
             default:
                 System.out.println("Opción no válida. Intente nuevamente.");

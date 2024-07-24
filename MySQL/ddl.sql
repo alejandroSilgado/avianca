@@ -182,3 +182,11 @@ CREATE TABLE seleccion_asientos (
     id_cliente INT,
     FOREIGN KEY (id_cliente) REFERENCES clientes(id)
 );
+CREATE TABLE escalas (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    id_trayecto INT,
+    id_aeropuerto INT,
+    fecha DATE,
+    FOREIGN KEY (id_trayecto) REFERENCES trayectos(id),
+    FOREIGN KEY (id_aeropuerto) REFERENCES aeropuertos(id)
+);

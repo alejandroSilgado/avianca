@@ -143,3 +143,15 @@ INSERT INTO usuarios (nombre, apellido, email, contraseña, id_rol) VALUES
 ('Agente', 'Agente', 'agente@example.com', 'agente123', 2),
 ('Cliente', 'Cliente', 'cliente@example.com', 'cliente123', 3);
 
+-- Inserta una escala para un trayecto con ID 1 en el aeropuerto con ID 2
+INSERT INTO escalas (id_trayecto, id_aeropuerto, fecha)
+VALUES (1, 1, '2024-07-20');
+
+INSERT INTO escalas (id_trayecto, id_aeropuerto, fecha)
+VALUES (2, 2, '2024-07-21');
+
+INSERT INTO escalas (id_trayecto, id_aeropuerto, fecha)
+VALUES (3, 3, '2024-07-22');
+
+INSERT INTO escalas (id_trayecto, id_aeropuerto, fecha)
+VALUES (1, 2, '2024-07-23');

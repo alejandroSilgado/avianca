@@ -41,8 +41,15 @@ public class dbOutAuth {
                         System.out.println("Rol no reconocido.");
                 }
             } else {
-                System.out.println("Credenciales incorrectas.");
+                System.out.println("Credenciales incorrectas, intente denuevo");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                auth.application.appAuth.menuInicioSesion();
             }
+            
         } catch (SQLException e) {
             System.out.println("Error al iniciar sesión: " + e.getMessage());
         }
@@ -63,8 +70,20 @@ public class dbOutAuth {
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Usuario insertado correctamente en la base de datos.");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                    auth.application.appAuth.menuInicioSesion();
             } else {
                 System.out.println("No se pudo insertar el usuario en la base de datos.");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                    auth.application.appAuth.menuInicioSesion();
             }
     
         } catch (SQLException e) {

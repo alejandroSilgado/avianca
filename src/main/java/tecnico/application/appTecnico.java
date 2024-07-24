@@ -28,7 +28,7 @@ public class appTecnico {
 
             System.out.print("Ingrese una opcion: ");
             int opcion = scanner.nextInt();
-            scanner.nextLine(); // Limpiar el buffer
+            scanner.nextLine(); 
 
             switch (opcion) {
                 case 1:
