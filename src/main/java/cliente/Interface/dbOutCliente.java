@@ -189,6 +189,7 @@ public class dbOutCliente{
     public static void realizarPago(String asientoId, int idCliente) {
 
     }
+   
     public static void dbconsultarReserva(Integer identificador) {
         String query = "SELECT drt.id_reserva_trayecto, drt.id_cliente, c.nombre " +
                        "FROM detalles_reservas_trayectos drt " +
@@ -219,7 +220,7 @@ public class dbOutCliente{
             System.out.println("Error al consultar la reserva.");
         }
     }
-
+    
 }
     
 
